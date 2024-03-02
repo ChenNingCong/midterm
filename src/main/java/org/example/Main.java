@@ -13,6 +13,14 @@ import org.example.sql.Connector;
 import org.example.sql.MySQLConnectionParams;
 import org.example.sql.MySQLConnector;
 import org.example.type.Account;
+import org.example.util.Convert2Account;
+
+import javax.xml.transform.Result;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.inject.name.Names.named;
 
@@ -29,31 +37,41 @@ class ConnectorModule extends AbstractModule {
     @Singleton
     @ConnectorProvider
     static Connector provideConnector(@MySQLConnectionParamsProvider MySQLConnectionParams _params) {
-        System.out.println("Initializing database and connection");
         MySQLConnector conn = new MySQLConnector(_params);
-        conn.dropAccountTable();
-        conn = new MySQLConnector(_params);
         AdminMySQLTransactionManager manager = new AdminMySQLTransactionManager(conn);
-        try{
-            Account account1 = new Account(
-                    "admin",
-                    "12345",
-                    "XYZ",
-                    6000,
-                    true
-            );
-            manager.createAccount(account1);
-            Account account2 = new Account(
-                    "UserName2",
-                    "88888",
-                    "ABC",
-                    100,
-                    false
-            );
-            manager.createAccount(account2);
+        Boolean isInit = false;
+        try {
+            ResultSet rs = conn.executeQuery("SHOW TABLES LIKE 'accounts';");
+            while (rs.next()) {
+                isInit = true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        catch (Exception e) {
-            throw new RuntimeException();
+        if (!isInit) {
+            System.out.println("Initializing database.");
+            conn.createAccountTable();
+            try{
+                Account account1 = new Account(
+                        "admin",
+                        "12345",
+                        "XYZ",
+                        6000,
+                        true
+                );
+                manager.createAccount(account1);
+                Account account2 = new Account(
+                        "UserName2",
+                        "88888",
+                        "ABC",
+                        100,
+                        false
+                );
+                manager.createAccount(account2);
+            }
+            catch (Exception e) {
+                throw new RuntimeException();
+            }
         }
         return conn;
     }

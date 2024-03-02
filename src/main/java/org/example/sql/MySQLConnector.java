@@ -12,7 +12,6 @@ public class MySQLConnector implements Connector {
     @Inject
     public MySQLConnector(@MySQLConnectionParamsProvider MySQLConnectionParams _params) {
         params = _params;
-        createAccountTable();
     }
 
     private Connection createConnection() throws SQLException {
@@ -20,7 +19,7 @@ public class MySQLConnector implements Connector {
                 params.http + '/' + params.database, params.user, params.password);
     }
 
-    private void createAccountTable() {
+    public void createAccountTable() {
         String cmd = """
                 CREATE TABLE IF NOT EXISTS `accounts` (
                   `id` int NOT NULL AUTO_INCREMENT,
