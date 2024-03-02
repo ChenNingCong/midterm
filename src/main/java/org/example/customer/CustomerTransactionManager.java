@@ -8,6 +8,6 @@ public abstract class CustomerTransactionManager extends TransactionManager {
         super(_connector);
     }
     public abstract Integer getCash(Integer id);
-    public abstract void withdrawCash(Integer id, Integer delta);
-    public abstract void depositCash(Integer id, Integer delta);
+    public abstract void withdrawCash(Integer id, Integer delta) throws InvalidAmountException;
+    public abstract void depositCash(Integer id, Integer delta) throws InvalidAmountException;
 }

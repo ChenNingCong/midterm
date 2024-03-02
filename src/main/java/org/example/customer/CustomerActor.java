@@ -41,7 +41,13 @@ public class CustomerActor implements Actor {
                 }
                 String amountString = scanner.nextLine();
                 try {
-                    Integer amount = Integer.parseInt(amountString);
+                    Integer amount = null;
+                    try {
+                        amount = Integer.parseInt(amountString);
+                    }
+                    catch (NumberFormatException e) {
+                        throw new InvalidAmountException("Input amount must be positive number.");
+                    }
                     if (amount <= 0) {
                         System.out.println("Withdrawal amount must be positive number.");
                     } else {
@@ -60,8 +66,8 @@ public class CustomerActor implements Actor {
                                 Balance: %d
                                 """, id, getFormatCurrentDate(), isWithdrawal ? "Withdrawn" : "Deposited", amount, balance));
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Withdrawal amount must be positive number.");
+                } catch (InvalidAmountException e) {
+                    System.out.println(e.reason);
                 }
             }
             case "3" -> {

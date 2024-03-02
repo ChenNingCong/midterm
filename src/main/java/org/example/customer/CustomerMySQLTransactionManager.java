@@ -13,17 +13,17 @@ public class CustomerMySQLTransactionManager extends CustomerTransactionManager 
     public Integer getCash(Integer id) {
         return getAccountById(id).balance;
     }
-    public void withdrawCash(Integer id, Integer delta) {
+    public void withdrawCash(Integer id, Integer delta) throws InvalidAmountException {
         assert delta > 0;
         updateBalance(id, -delta);
     }
-    public void depositCash(Integer id, Integer delta) {
+    public void depositCash(Integer id, Integer delta) throws InvalidAmountException {
         assert delta > 0;
         updateBalance(id, delta);
     }
-    private void updateBalance(Integer id, Integer delta) {
+    private void updateBalance(Integer id, Integer delta) throws InvalidAmountException {
         if (!((getAccountById(id).balance + delta) >= 0)){
-            throw new RuntimeException("Balance will be negative!");
+            throw new InvalidAmountException("Balance will be negative!");
         }
         else {
             String cmd = String.format("""

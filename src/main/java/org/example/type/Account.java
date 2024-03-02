@@ -32,6 +32,21 @@ public class Account {
         // holder name can be empty
         assert !holdersName.isEmpty() && holdersName.length() <= 255;
     }
+    static public String validateAccount(String login, String pinCode, String holdersName, String balance, String status) {
+        if (!(pinCode.length() == 5)) {
+            return "pin code must be a 5 number digits.";
+        }
+        if (login.length() > 255){
+            return "Login name can have at most 255 characters";
+        }
+        if (holdersName.length() > 255){
+            return "Holders name can have at most 255 characters";
+        }
+        if (!(status == "Active" || status != "Disabled") ){
+            return "Invalid status";
+        }
+        return null;
+    }
     @Override
     public String toString() {
         return String.format("Account(login=%s, pinCode=%s, holdersName=%s, balance=%d, status=%s)",

@@ -34,22 +34,27 @@ class ConnectorModule extends AbstractModule {
         conn.dropAccountTable();
         conn = new MySQLConnector(_params);
         AdminMySQLTransactionManager manager = new AdminMySQLTransactionManager(conn);
-        Account account1 = new Account(
-                "admin",
-                "12345",
-                "XYZ",
-                6000,
-                true
-        );
-        manager.createAccount(account1);
-        Account account2 = new Account(
-                "UserName2",
-                "88888",
-                "ABC",
-                100,
-                false
-        );
-        manager.createAccount(account2);
+        try{
+            Account account1 = new Account(
+                    "admin",
+                    "12345",
+                    "XYZ",
+                    6000,
+                    true
+            );
+            manager.createAccount(account1);
+            Account account2 = new Account(
+                    "UserName2",
+                    "88888",
+                    "ABC",
+                    100,
+                    false
+            );
+            manager.createAccount(account2);
+        }
+        catch (Exception e) {
+            throw new RuntimeException();
+        }
         return conn;
     }
 }

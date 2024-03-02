@@ -9,14 +9,14 @@ public abstract class AdminTransactionManager extends TransactionManager {
         super(_connector);
     }
 
-    public abstract void createAccount(Account account);
-    public abstract void deleteAccountById(Integer id);
+    public abstract void createAccount(Account account) throws InvalidAccountIdException;
+    public abstract void deleteAccountById(Integer id) throws InvalidAccountIdException;
     public abstract Account getAccountById(Integer id);
     public abstract void updateAccount(Integer id,
                                        String login,
                                        String pinCode,
                                        String holderNames,
-                                       Boolean status);
+                                       Boolean status) throws InvalidAccountIdException;
     public abstract boolean checkIfExistId(Integer id);
     public abstract boolean checkIfExistLogin(String login);
 }

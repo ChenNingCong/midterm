@@ -18,7 +18,7 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
         super(_connector);
     }
 
-    public void createAccount(Account account) {
+    public void createAccount(Account account) throws InvalidAccountIdException {
         /*
         * `id` int NOT NULL AUTO_INCREMENT,
                   `login` varchar(255) NOT NULL,
@@ -28,7 +28,7 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
                   `status` boolean NOT NULL,
                   PRIMARY KEY (`Id`)*/
         if (checkIfExistLogin(account.login)) {
-            throw new RuntimeException("Login is used by another customer, use another name!");
+            throw new InvalidAccountIdException("Login is used by another customer, use another name!");
         }
         String cmd = String.format("""
                 INSERT INTO accounts (login, pinCode, holdersName, balance, status)
@@ -36,10 +36,10 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
                 """, account.login, account.pinCode, account.holdersName, account.balance, account.status ? "TRUE" : "FALSE");
         connector.executeUpdate(cmd);
     }
-    public void deleteAccountById(Integer id) {
+    public void deleteAccountById(Integer id) throws InvalidAccountIdException {
         assert id >= 0;
         if (!checkIfExistId(id)) {
-            throw new RuntimeException("Account doesn't exists!.");
+            throw new InvalidAccountIdException("Account doesn't exists!.");
         }
         // TODO : we should actually directly perform deletion
         // and see whether the id exists
@@ -96,11 +96,11 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
                               String login,
                               String pinCode,
                               String holderNames,
-                              Boolean status) {
+                              Boolean status) throws InvalidAccountIdException {
 
         List<String> params = new ArrayList<>();
         if (!checkIfExistId(id)) {
-            throw new RuntimeException("User doesn't exist");
+            throw new InvalidAccountIdException("User doesn't exist");
         }
         if (login != null) {
             // TODO : use a function to test this
@@ -108,7 +108,7 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
             params.add(String.format("login = \"%s\"", login));
             // TODO :
             if (checkIfExistLogin(login)) {
-                throw new RuntimeException("Login id is not unique! Please use a new id");
+                throw new InvalidAccountIdException("Login id is not unique! Please use a new id");
             }
         }
         if (holderNames != null) {

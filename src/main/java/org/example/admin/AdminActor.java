@@ -8,11 +8,15 @@ import org.example.type.Actor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
+import org.example.util.Scanner;
+
+import static org.example.type.Account.validateAccount;
 
 
 public class AdminActor implements Actor {
     private AdminTransactionManager manager;
+
+
     @Inject
     public AdminActor(@AdminTransactionManagerProvider AdminTransactionManager _manager) {
         manager = _manager;
@@ -44,17 +48,47 @@ public class AdminActor implements Actor {
                     inputs.add(scanner.nextLine());
                 }
                 // TODO : sanity check
-                Account account = new Account(inputs.get(0), inputs.get(1), inputs.get(2), Integer.parseInt(inputs.get(3)), inputs.get(4) == "Active");
-                manager.createAccount(account);
+                if (inputs.get(1).length() != 5) {
+                    System.out.println("pin code must be a 5 number digits.");
+                    break;
+                }
+                String err = validateAccount(inputs.get(0), inputs.get(1), inputs.get(2), inputs.get(3), inputs.get(4));
+                if (err != null) {
+                    System.out.println(err);
+                    break;
+                }
+                Account account = new Account(inputs.get(0), inputs.get(1), inputs.get(2), Integer.parseInt(inputs.get(3)), inputs.get(4).equals("Active"));
+                try {
+                    manager.createAccount(account);
+                } catch (InvalidAccountIdException e) {
+                    System.out.println(e);
+                }
             }
             case "2" -> {
                 System.out.println("Enter the account number to which you want to delete:");
-                Integer id = Integer.parseInt(scanner.nextLine());
+                Integer id = null;
+                Integer id2 = null;
+                try {
+                    id = scanner.parsePositiveNumber();
+                } catch (NumberFormatException e) {
+                    System.out.println("Not a positive number");
+                    break;
+                }
                 Account account = manager.getAccountById(id);
                 System.out.println(String.format("You wish to delete the account held by %s. If this information is correct, please re-enter the account number:", account.holdersName));
-                Integer id2 = Integer.parseInt(scanner.nextLine());
+                try {
+                    id2 = scanner.parsePositiveNumber();
+                } catch (NumberFormatException e) {
+                    System.out.println("Not a positive number");
+                    break;
+                }
                 if (id == id2) {
-                    manager.deleteAccountById(account.id);
+                    try {
+                        manager.deleteAccountById(account.id);
+                    } catch (InvalidAccountIdException e) {
+                        System.out.println(e);
+                        break;
+                    }
                     System.out.println("Account Deleted Successfully.");
                 } else {
                     System.out.println("Account id doesn't match, aborted.");
@@ -63,7 +97,13 @@ public class AdminActor implements Actor {
             }
             case "3" -> {
                 System.out.println("Enter Account number:");
-                Integer id = Integer.parseInt(scanner.nextLine());
+                Integer id = null;
+                try {
+                    id = scanner.parsePositiveNumber();
+                } catch (NumberFormatException e) {
+                    System.out.println("Not a positive number");
+                    break;
+                }
                 if (!manager.checkIfExistId(id)) {
                     System.out.println("Id doesn't exist.");
                 } else {
@@ -88,7 +128,11 @@ public class AdminActor implements Actor {
                         System.out.println("Status can only be Active or Disabled.");
                         return isExiting;
                     }
-                    manager.updateAccount(id, login, pinCode, holdersName, status);
+                    try {
+                        manager.updateAccount(id, login, pinCode, holdersName, status);
+                    } catch (InvalidAccountIdException e) {
+                        System.out.println(e);
+                    }
                 }
             }
             case "4" -> {
