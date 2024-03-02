@@ -66,8 +66,8 @@ public class AdminActor implements Actor {
             }
             case "2" -> {
                 System.out.println("Enter the account number to which you want to delete:");
-                Integer id = null;
-                Integer id2 = null;
+                Integer id;
+                Integer id2;
                 try {
                     id = scanner.parsePositiveNumber();
                 } catch (NumberFormatException e) {
@@ -82,7 +82,7 @@ public class AdminActor implements Actor {
                     System.out.println("Not a positive number");
                     break;
                 }
-                if (id == id2) {
+                if (id.equals(id2)) {
                     try {
                         manager.deleteAccountById(account.id);
                     } catch (InvalidAccountIdException e) {
@@ -97,7 +97,7 @@ public class AdminActor implements Actor {
             }
             case "3" -> {
                 System.out.println("Enter Account number:");
-                Integer id = null;
+                Integer id;
                 try {
                     id = scanner.parsePositiveNumber();
                 } catch (NumberFormatException e) {
@@ -117,16 +117,14 @@ public class AdminActor implements Actor {
                     String login = inputs.get(0).isEmpty() ? null : inputs.get(0);
                     String pinCode = inputs.get(1).isEmpty() ? null : inputs.get(1);
                     String holdersName = inputs.get(2).isEmpty() ? null : inputs.get(2);
-                    Boolean status = null;
-                    if (inputs.get(3) == "Active") {
+                    Boolean status;
+                    if (inputs.get(3).equals("Active")) {
                         status = true;
-                    } else if (inputs.get(3) == "Disabled") {
+                    } else if (inputs.get(3).equals("Disabled")) {
                         status = false;
-                    } else if (inputs.get(3).isEmpty()) {
-                        status = null;
                     } else {
                         System.out.println("Status can only be Active or Disabled.");
-                        return isExiting;
+                        return false;
                     }
                     try {
                         manager.updateAccount(id, login, pinCode, holdersName, status);

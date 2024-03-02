@@ -75,7 +75,7 @@ public class MySQLConnector implements Connector {
     public ResultSet executeQuery(String cmd) {
         Connection con = null;
         Statement stmt = null;
-        ResultSet rs = null;
+        ResultSet rs;
         try {
             con = createConnection();
             stmt = con.createStatement();

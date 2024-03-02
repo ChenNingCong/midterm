@@ -41,7 +41,7 @@ public class CustomerActor implements Actor {
                 }
                 String amountString = scanner.nextLine();
                 try {
-                    Integer amount = null;
+                    Integer amount;
                     try {
                         amount = Integer.parseInt(amountString);
                     }

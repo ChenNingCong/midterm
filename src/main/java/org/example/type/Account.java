@@ -42,7 +42,7 @@ public class Account {
         if (holdersName.length() > 255){
             return "Holders name can have at most 255 characters";
         }
-        if (!(status == "Active" || status != "Disabled") ){
+        if (!(status.equals("Active") || !status.equals("Disabled")) ){
             return "Invalid status";
         }
         return null;
