@@ -1,5 +1,6 @@
 This is the midterm code for Ningcong Chen.
 1. Database setup:
+
 1.1 The database name is `account`. The login username is `chenningcong` and password is `12345678`. This setting can be changed by modifying the following code in `src/sql/MySQLConnector.java`. 
 ```
     static MySQLConnectionParams provideMySQLConnectionParams() {
@@ -19,3 +20,4 @@ GRANT ALL PRIVILEGES ON account.* TO chenningcong@localhost;
 |1|admin|12345|XYZ|6000|Active|
 |2|UserName2|88888|ABC|100|Disabled|
 
+The program entry point is `org.example.Main`.
