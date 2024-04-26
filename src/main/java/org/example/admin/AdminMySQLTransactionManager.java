@@ -121,6 +121,16 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
             assert pinCode.length() == 5;
             params.add(String.format(Locale.US,"pinCode = \"%s\"", pinCode));
         }
+        if (status != null) {
+            String statusString = null;
+            if (status) {
+                statusString = "1";
+            }
+            else {
+                statusString = "0";
+            }
+            params.add(String.format(Locale.US,"status = \"%s\"", statusString));
+        }
         String p = String.join(", ", params);
         String cmd = String.format("""
                 UPDATE accounts

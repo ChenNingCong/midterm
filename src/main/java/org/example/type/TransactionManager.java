@@ -7,7 +7,7 @@ import org.example.util.Convert2Account;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class TransactionManager {
+public abstract class TransactionManager {
     protected Connector connector;
     public TransactionManager(@ConnectorProvider Connector _connector) {
         connector = _connector;
@@ -27,34 +27,6 @@ public class TransactionManager {
         }
     }
 
-    public boolean checkIfExistId(Integer id) {
-        assert id >= 0;
-        String cmd = String.format("""
-                SELECT * FROM accounts WHERE id=%d
-                """, id);
-        ResultSet rs = connector.executeQuery(cmd);
-        try {
-            Account[] accounts = Convert2Account.convert(rs);
-            assert accounts.length <= 1;
-            return accounts.length == 1;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean checkIfExistLogin(String login) {
-        String cmd = String.format("""
-                SELECT * FROM accounts WHERE login="%s"
-                """, login);
-        ResultSet rs = connector.executeQuery(cmd);
-        try {
-            Account[] accounts = Convert2Account.convert(rs);
-            assert accounts.length <= 1;
-            return accounts.length == 1;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
     public Integer checkLoginAndPincode(String login, String pinCode) {
         String cmd = String.format("""
                 SELECT * FROM accounts WHERE login="%s" and pinCode="%s"

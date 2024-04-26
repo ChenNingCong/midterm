@@ -9,7 +9,7 @@ public class Scanner {
     }
 
     public Integer parsePositiveNumber() throws NumberFormatException {
-        Integer id = scanner.nextInt();
+        Integer id = Integer.parseInt(scanner.nextLine());
         if (id < 0) {
             throw new NumberFormatException();
         }

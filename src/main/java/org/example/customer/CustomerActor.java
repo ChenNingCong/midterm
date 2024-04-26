@@ -22,7 +22,7 @@ public class CustomerActor implements Actor {
             isExiting = prompt();
         }
     }
-    private boolean prompt() {
+    public boolean prompt() {
         boolean isExiting = false;
         System.out.println("""
                 1----Withdraw Cash

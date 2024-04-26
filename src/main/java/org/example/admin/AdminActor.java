@@ -74,6 +74,10 @@ public class AdminActor implements Actor {
                     System.out.println("Not a positive number");
                     break;
                 }
+                if (!manager.checkIfExistId(id)){
+                    System.out.println(String.format("Account %s does not exist", id));
+                    break;
+                }
                 Account account = manager.getAccountById(id);
                 System.out.println(String.format("You wish to delete the account held by %s. If this information is correct, please re-enter the account number:", account.holdersName));
                 try {
@@ -86,10 +90,11 @@ public class AdminActor implements Actor {
                     try {
                         manager.deleteAccountById(account.id);
                     } catch (InvalidAccountIdException e) {
+                        // unreachable...we have already check before
                         System.out.println(e);
                         break;
                     }
-                    System.out.println("Account Deleted Successfully.");
+                    System.out.println("Account deleted successfully.");
                 } else {
                     System.out.println("Account id doesn't match, aborted.");
                 }
@@ -152,7 +157,7 @@ public class AdminActor implements Actor {
                 }
             }
             case "5" -> {
-                System.out.println("Exist.");
+                System.out.println("Exit.");
                 isExiting = true;
             }
             default -> System.out.println("Invalid input.");
