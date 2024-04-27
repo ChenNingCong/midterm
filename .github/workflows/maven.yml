@@ -40,6 +40,11 @@ jobs:
         mysql database: 'account_test'
         mysql user: 'chenningcong'
         mysql password: '12345678'
+    - name: Wait for MySQL
+      run: |
+          while ! mysqladmin ping --host=127.0.0.1 --silent; do
+            sleep 1
+          done
     - name: Java test
       run: mvn test -P release
     - name: Javadoc generation
