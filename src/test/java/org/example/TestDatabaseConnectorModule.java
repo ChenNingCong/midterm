@@ -11,42 +11,29 @@ import org.example.sql.MySQLConnectionParams;
 import org.example.sql.MySQLConnector;
 import org.example.type.Account;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class TestDatabaseConnectorModule extends AbstractModule {
     @Provides
     @Singleton
     @MySQLConnectionParamsProvider
     static MySQLConnectionParams provideMySQLConnectionParams() {
-        return new MySQLConnectionParams("jdbc:mysql://localhost:3306", "account_test", "chenningcong", "12345678");
+        return new MySQLConnectionParams(
+                "jdbc:mysql://localhost:3306", "account_test", "chenningcong", "12345678");
     }
 
     @Provides
     @Singleton
     @ConnectorProvider
-    static Connector provideConnector(@MySQLConnectionParamsProvider MySQLConnectionParams _params) {
+    static Connector provideConnector(
+            @MySQLConnectionParamsProvider MySQLConnectionParams _params) {
         MySQLConnector conn = new MySQLConnector(_params);
         conn.dropAccountTable();
         conn.createAccountTable();
         System.out.println("Create table successfully");
         AdminMySQLTransactionManager manager = new AdminMySQLTransactionManager(conn);
         try {
-            Account account1 = new Account(
-                    "admin",
-                    "12345",
-                    "XYZ",
-                    6000,
-                    true
-            );
+            Account account1 = new Account("admin", "12345", "XYZ", 6000, true);
             manager.createAccount(account1);
-            Account account2 = new Account(
-                    "UserName2",
-                    "88888",
-                    "ABC",
-                    100,
-                    false
-            );
+            Account account2 = new Account("UserName2", "88888", "ABC", 100, false);
             manager.createAccount(account2);
         } catch (Exception e) {
             throw new RuntimeException();

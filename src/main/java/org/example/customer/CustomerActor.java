@@ -2,19 +2,22 @@ package org.example.customer;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import java.util.Scanner;
 import org.example.provider.CustomerTransactionManagerProvider;
 import org.example.type.Actor;
-
-import java.util.Scanner;
 
 public class CustomerActor implements Actor {
     Integer id;
     private CustomerTransactionManager manager;
+
     @Inject
-    public CustomerActor(@CustomerTransactionManagerProvider CustomerTransactionManager _manager, @Named("id") Integer _id) {
+    public CustomerActor(
+            @CustomerTransactionManagerProvider CustomerTransactionManager _manager,
+            @Named("id") Integer _id) {
         id = _id;
         manager = _manager;
     }
+
     @Override
     public void action() {
         boolean isExiting = false;
@@ -22,9 +25,11 @@ public class CustomerActor implements Actor {
             isExiting = prompt();
         }
     }
+
     public boolean prompt() {
         boolean isExiting = false;
-        System.out.println("""
+        System.out.println(
+                """
                 1----Withdraw Cash
                 2----Deposit Cash
                 3----Display Balance
@@ -44,8 +49,7 @@ public class CustomerActor implements Actor {
                     Integer amount;
                     try {
                         amount = Integer.parseInt(amountString);
-                    }
-                    catch (NumberFormatException e) {
+                    } catch (NumberFormatException e) {
                         throw new InvalidAmountException("Input amount must be positive number.");
                     }
                     if (amount <= 0) {
@@ -59,12 +63,19 @@ public class CustomerActor implements Actor {
                             System.out.println("Cash Deposited Successfully.");
                         }
                         Integer balance = manager.getCash(id);
-                        System.out.println(String.format("""
+                        System.out.println(
+                                String.format(
+                                        """
                                 Account #%d
                                 Date: %s
                                 %s:%d
                                 Balance: %d
-                                """, id, getFormatCurrentDate(), isWithdrawal ? "Withdrawn" : "Deposited", amount, balance));
+                                """,
+                                        id,
+                                        getFormatCurrentDate(),
+                                        isWithdrawal ? "Withdrawn" : "Deposited",
+                                        amount,
+                                        balance));
                     }
                 } catch (InvalidAmountException e) {
                     System.out.println(e.reason);
@@ -72,11 +83,14 @@ public class CustomerActor implements Actor {
             }
             case "3" -> {
                 Integer balance = manager.getCash(id);
-                System.out.println(String.format("""
+                System.out.println(
+                        String.format(
+                                """
                         Account #%d
                         Date: %s
                         Balance: %d
-                        """, id, getFormatCurrentDate(), balance));
+                        """,
+                                id, getFormatCurrentDate(), balance));
             }
             case "4" -> {
                 System.out.println("Exit.");

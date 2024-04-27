@@ -1,26 +1,24 @@
 package org.example.admin;
 
-import com.google.inject.Inject;
-import org.example.provider.AdminTransactionManagerProvider;
-import org.example.type.Account;
-import org.example.type.Actor;
+import static org.example.type.Account.validateAccount;
 
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.example.provider.AdminTransactionManagerProvider;
+import org.example.type.Account;
+import org.example.type.Actor;
 import org.example.util.Scanner;
-
-import static org.example.type.Account.validateAccount;
-
 
 public class AdminActor implements Actor {
     private AdminTransactionManager manager;
-
 
     @Inject
     public AdminActor(@AdminTransactionManagerProvider AdminTransactionManager _manager) {
         manager = _manager;
     }
+
     public void action() {
         boolean isExiting = false;
         while (!isExiting) {
@@ -29,7 +27,8 @@ public class AdminActor implements Actor {
     }
 
     public boolean prompt() {
-        System.out.println("""
+        System.out.println(
+                """
                 1----Create New Account
                 2----Delete Existing Account
                 3----Update Account Information
@@ -41,7 +40,9 @@ public class AdminActor implements Actor {
         switch (input) {
             case "1" -> {
                 System.out.println("Enter the account information you want to create");
-                List<String> prompts = Arrays.asList("Login", "Pin Code", "Holders Name", "Starting Balance", "Status");
+                List<String> prompts =
+                        Arrays.asList(
+                                "Login", "Pin Code", "Holders Name", "Starting Balance", "Status");
                 List<String> inputs = new ArrayList<String>();
                 for (String prompt : prompts) {
                     System.out.print(prompt + ":");
@@ -52,12 +53,24 @@ public class AdminActor implements Actor {
                     System.out.println("pin code must be a 5 number digits.");
                     break;
                 }
-                String err = validateAccount(inputs.get(0), inputs.get(1), inputs.get(2), inputs.get(3), inputs.get(4));
+                String err =
+                        validateAccount(
+                                inputs.get(0),
+                                inputs.get(1),
+                                inputs.get(2),
+                                inputs.get(3),
+                                inputs.get(4));
                 if (err != null) {
                     System.out.println(err);
                     break;
                 }
-                Account account = new Account(inputs.get(0), inputs.get(1), inputs.get(2), Integer.parseInt(inputs.get(3)), inputs.get(4).equals("Active"));
+                Account account =
+                        new Account(
+                                inputs.get(0),
+                                inputs.get(1),
+                                inputs.get(2),
+                                Integer.parseInt(inputs.get(3)),
+                                inputs.get(4).equals("Active"));
                 try {
                     manager.createAccount(account);
                 } catch (InvalidAccountIdException e) {
@@ -74,12 +87,16 @@ public class AdminActor implements Actor {
                     System.out.println("Not a positive number");
                     break;
                 }
-                if (!manager.checkIfExistId(id)){
+                if (!manager.checkIfExistId(id)) {
                     System.out.println(String.format("Account %s does not exist", id));
                     break;
                 }
                 Account account = manager.getAccountById(id);
-                System.out.println(String.format("You wish to delete the account held by %s. If this information is correct, please re-enter the account number:", account.holdersName));
+                System.out.println(
+                        String.format(
+                                "You wish to delete the account held by %s. If this information is"
+                                        + " correct, please re-enter the account number:",
+                                account.holdersName));
                 try {
                     id2 = scanner.parsePositiveNumber();
                 } catch (NumberFormatException e) {
@@ -98,7 +115,6 @@ public class AdminActor implements Actor {
                 } else {
                     System.out.println("Account id doesn't match, aborted.");
                 }
-
             }
             case "3" -> {
                 System.out.println("Enter Account number:");
@@ -113,7 +129,8 @@ public class AdminActor implements Actor {
                     System.out.println("Id doesn't exist.");
                 } else {
                     System.out.println("Enter the account information you want to update");
-                    List<String> prompts = Arrays.asList("Login", "Pin Code", "Holders Name", "Status");
+                    List<String> prompts =
+                            Arrays.asList("Login", "Pin Code", "Holders Name", "Status");
                     List<String> inputs = new ArrayList<String>();
                     for (String prompt : prompts) {
                         System.out.print(prompt + ":");
@@ -145,7 +162,9 @@ public class AdminActor implements Actor {
                     System.out.println("Id doesn't exist.");
                 } else {
                     Account account = manager.getAccountById(id);
-                    System.out.println(String.format("""
+                    System.out.println(
+                            String.format(
+                                    """
                             The account information is:
                             Account # %d
                             Holder:%s
@@ -153,7 +172,13 @@ public class AdminActor implements Actor {
                             Status:%s
                             Login:%s
                             Pin Code:%s
-                            """, account.id, account.holdersName, account.balance, account.status, account.login, account.pinCode));
+                            """,
+                                    account.id,
+                                    account.holdersName,
+                                    account.balance,
+                                    account.status,
+                                    account.login,
+                                    account.pinCode));
                 }
             }
             case "5" -> {

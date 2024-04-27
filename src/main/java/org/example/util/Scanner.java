@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 public class Scanner {
     java.util.Scanner scanner;
+
     public Scanner(InputStream source) {
         scanner = new java.util.Scanner(source);
     }
@@ -15,6 +16,7 @@ public class Scanner {
         }
         return id;
     }
+
     public String nextLine() {
         return scanner.nextLine();
     }

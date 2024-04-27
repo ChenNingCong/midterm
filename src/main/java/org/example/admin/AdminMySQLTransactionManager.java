@@ -1,16 +1,15 @@
 package org.example.admin;
 
 import com.google.inject.Inject;
-import org.example.sql.Connector;
-import org.example.provider.ConnectorProvider;
-import org.example.type.Account;
-import org.example.util.Convert2Account;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import org.example.provider.ConnectorProvider;
+import org.example.sql.Connector;
+import org.example.type.Account;
+import org.example.util.Convert2Account;
 
 public class AdminMySQLTransactionManager extends AdminTransactionManager {
     @Inject
@@ -28,14 +27,23 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
                   `status` boolean NOT NULL,
                   PRIMARY KEY (`Id`)*/
         if (checkIfExistLogin(account.login)) {
-            throw new InvalidAccountIdException("Login is used by another customer, use another name!");
+            throw new InvalidAccountIdException(
+                    "Login is used by another customer, use another name!");
         }
-        String cmd = String.format("""
+        String cmd =
+                String.format(
+                        """
                 INSERT INTO accounts (login, pinCode, holdersName, balance, status)
                 VALUES ('%s', '%s', '%s', %d, %s);
-                """, account.login, account.pinCode, account.holdersName, account.balance, account.status ? "TRUE" : "FALSE");
+                """,
+                        account.login,
+                        account.pinCode,
+                        account.holdersName,
+                        account.balance,
+                        account.status ? "TRUE" : "FALSE");
         connector.executeUpdate(cmd);
     }
+
     public void deleteAccountById(Integer id) throws InvalidAccountIdException {
         assert id >= 0;
         if (!checkIfExistId(id)) {
@@ -43,16 +51,23 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
         }
         // TODO : we should actually directly perform deletion
         // and see whether the id exists
-        String cmd = String.format("""
+        String cmd =
+                String.format(
+                        """
                 DELETE FROM accounts WHERE id=%d
-                """, id);
+                """,
+                        id);
         connector.executeUpdate(cmd);
     }
+
     public Account getAccountById(Integer id) {
         assert id >= 0;
-        String cmd = String.format("""
+        String cmd =
+                String.format(
+                        """
                 SELECT * FROM accounts WHERE id=%d
-                """, id);
+                """,
+                        id);
         ResultSet rs = connector.executeQuery(cmd);
         try {
             Account[] accounts = Convert2Account.convert(rs);
@@ -65,9 +80,12 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
 
     public boolean checkIfExistId(Integer id) {
         assert id >= 0;
-        String cmd = String.format("""
+        String cmd =
+                String.format(
+                        """
                 SELECT * FROM accounts WHERE id=%d
-                """, id);
+                """,
+                        id);
         ResultSet rs = connector.executeQuery(cmd);
         try {
             Account[] accounts = Convert2Account.convert(rs);
@@ -79,9 +97,12 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
     }
 
     public boolean checkIfExistLogin(String login) {
-        String cmd = String.format("""
+        String cmd =
+                String.format(
+                        """
                 SELECT * FROM accounts WHERE login="%s"
-                """, login);
+                """,
+                        login);
         ResultSet rs = connector.executeQuery(cmd);
         try {
             Account[] accounts = Convert2Account.convert(rs);
@@ -92,11 +113,9 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
         }
     }
 
-    public void updateAccount(Integer id,
-                              String login,
-                              String pinCode,
-                              String holderNames,
-                              Boolean status) throws InvalidAccountIdException {
+    public void updateAccount(
+            Integer id, String login, String pinCode, String holderNames, Boolean status)
+            throws InvalidAccountIdException {
 
         List<String> params = new ArrayList<>();
         if (!checkIfExistId(id)) {
@@ -119,24 +138,26 @@ public class AdminMySQLTransactionManager extends AdminTransactionManager {
         if (pinCode != null) {
             // TODO : use a function to test this
             assert pinCode.length() == 5;
-            params.add(String.format(Locale.US,"pinCode = \"%s\"", pinCode));
+            params.add(String.format(Locale.US, "pinCode = \"%s\"", pinCode));
         }
         if (status != null) {
             String statusString = null;
             if (status) {
                 statusString = "1";
-            }
-            else {
+            } else {
                 statusString = "0";
             }
-            params.add(String.format(Locale.US,"status = \"%s\"", statusString));
+            params.add(String.format(Locale.US, "status = \"%s\"", statusString));
         }
         String p = String.join(", ", params);
-        String cmd = String.format("""
+        String cmd =
+                String.format(
+                        """
                 UPDATE accounts
                 SET %s
                 WHERE id=%d;
-                """, p, id);
+                """,
+                        p, id);
         connector.executeUpdate(cmd);
     }
 }

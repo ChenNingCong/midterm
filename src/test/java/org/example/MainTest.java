@@ -1,24 +1,24 @@
 package org.example;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class MainTest {
     @Test
     void main() {
-        setInputOutput(new String[]{"admin", "12345", "5"});
+        setInputOutput(new String[] {"admin", "12345", "5"});
         try {
-            Main.main(new String[]{});
+            Main.main(new String[] {});
         } catch (Exception e) {
 
         }
     }
+
     OutputStream setInputOutput(String[] prompt) {
         String userInput = String.join("\n", prompt);
         System.out.println(userInput);

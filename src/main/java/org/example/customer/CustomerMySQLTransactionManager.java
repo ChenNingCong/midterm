@@ -13,24 +13,29 @@ public class CustomerMySQLTransactionManager extends CustomerTransactionManager 
     public Integer getCash(Integer id) {
         return getAccountById(id).balance;
     }
+
     public void withdrawCash(Integer id, Integer delta) throws InvalidAmountException {
         assert delta > 0;
         updateBalance(id, -delta);
     }
+
     public void depositCash(Integer id, Integer delta) throws InvalidAmountException {
         assert delta > 0;
         updateBalance(id, delta);
     }
+
     private void updateBalance(Integer id, Integer delta) throws InvalidAmountException {
-        if (!((getAccountById(id).balance + delta) >= 0)){
+        if (!((getAccountById(id).balance + delta) >= 0)) {
             throw new InvalidAmountException("Balance will be negative!");
-        }
-        else {
-            String cmd = String.format("""
+        } else {
+            String cmd =
+                    String.format(
+                            """
                 UPDATE accounts
                 SET balance = balance + (%d)
                 WHERE id=%d;
-                """, delta, id);
+                """,
+                            delta, id);
             connector.executeUpdate(cmd);
         }
     }

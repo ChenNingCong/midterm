@@ -1,6 +1,12 @@
 package org.example.admin;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.inject.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import org.example.TestDatabaseConnectorModule;
 import org.example.provider.AdminTransactionManagerProvider;
 import org.example.provider.ConnectorProvider;
@@ -8,13 +14,6 @@ import org.example.sql.Connector;
 import org.example.type.Account;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AdminModule extends AbstractModule {
     @Provides
@@ -38,23 +37,16 @@ class AdminActorTest {
         adminActor = adminInjector.getInstance(AdminActor.class);
         manager = connInject.getInstance(AdminMySQLTransactionManager.class);
     }
+
     @Test
     void createInvalidAccount() {
         OutputStream os = null;
         // bad pin code
-        os = setInputOutput(new String[]{"1", "UserName2",
-                "888",
-                "ABC",
-                "100",
-                "Active", "5"});
+        os = setInputOutput(new String[] {"1", "UserName2", "888", "ABC", "100", "Active", "5"});
         adminActor.prompt();
         assertTrue(getOutputString(os).contains("5"));
 
-        os = setInputOutput(new String[]{"1", "UserName2",
-                "88888",
-                "ABC",
-                "100",
-                "Active", "5"});
+        os = setInputOutput(new String[] {"1", "UserName2", "88888", "ABC", "100", "Active", "5"});
         adminActor.prompt();
         assertTrue(getOutputString(os).contains("InvalidAccountIdException"));
     }
@@ -63,52 +55,48 @@ class AdminActorTest {
     void createAccount() {
         OutputStream os = null;
         // bad pin code
-        os = setInputOutput(new String[]{"1", "UserName3",
-                "88888",
-                "ABC",
-                "100",
-                "Active", "5"});
+        os = setInputOutput(new String[] {"1", "UserName3", "88888", "ABC", "100", "Active", "5"});
         adminActor.prompt();
-        Account account = assertDoesNotThrow(()-> manager.getAccountById(3));
+        Account account = assertDoesNotThrow(() -> manager.getAccountById(3));
         assertEquals(account.login, "UserName3");
     }
 
-
     @Test
     void deleteAccount() {
-        OutputStream os = setInputOutput(new String[]{"2", "2", "2", "5"});
+        OutputStream os = setInputOutput(new String[] {"2", "2", "2", "5"});
         adminActor.prompt();
         assertTrue(getOutputString(os).contains("succ"));
     }
 
     @Test
     void deleteAccountFailedConfirm() {
-        OutputStream os = setInputOutput(new String[]{"2", "2", "3", "5"});
+        OutputStream os = setInputOutput(new String[] {"2", "2", "3", "5"});
         adminActor.prompt();
         assertTrue(getOutputString(os).contains("match"));
     }
 
     @Test
     void deleteAccountInvalidId() {
-        OutputStream os = setInputOutput(new String[]{"2", "-1", "2", "2", "-1", "5"});
+        OutputStream os = setInputOutput(new String[] {"2", "-1", "2", "2", "-1", "5"});
         adminActor.prompt();
         assertTrue(getOutputString(os).contains("positive"));
     }
 
     @Test
     void deleteNonexistentAccount() {
-        OutputStream os = setInputOutput(new String[]{"2", "3", "3", "5"});
+        OutputStream os = setInputOutput(new String[] {"2", "3", "3", "5"});
         adminActor.prompt();
         assertTrue(getOutputString(os).contains("not"));
     }
+
     @Test
     void updateInvalidAccount() {
         OutputStream os = null;
-        os = setInputOutput(new String[]{"3", "3", "5"});
+        os = setInputOutput(new String[] {"3", "3", "5"});
         adminActor.prompt();
         assertTrue(getOutputString(os).contains("exist"));
 
-        os = setInputOutput(new String[]{"3", "-1", "5"});
+        os = setInputOutput(new String[] {"3", "-1", "5"});
         adminActor.prompt();
         assertTrue(getOutputString(os).contains("positive"));
     }
@@ -118,13 +106,9 @@ class AdminActorTest {
         PrintStream stdout = System.out;
         OutputStream os = null;
         // bad pin code
-        os = setInputOutput(new String[]{"3", "2",
-                "UserName3",
-                "77777",
-                "ABCDEF",
-                "Active", "5"});
+        os = setInputOutput(new String[] {"3", "2", "UserName3", "77777", "ABCDEF", "Active", "5"});
         adminActor.prompt();
-        Account account = assertDoesNotThrow(()-> manager.getAccountById(2));
+        Account account = assertDoesNotThrow(() -> manager.getAccountById(2));
         System.setOut(stdout);
         System.out.println(os.toString());
 
@@ -132,14 +116,11 @@ class AdminActorTest {
         assertEquals(account.status, true);
         assertEquals(account.pinCode, "77777");
 
-
-        os = setInputOutput(new String[]{"3", "2",
-                "UserName4",
-                "77777",
-                "ABCDEF",
-                "Disabled", "5"});
+        os =
+                setInputOutput(
+                        new String[] {"3", "2", "UserName4", "77777", "ABCDEF", "Disabled", "5"});
         adminActor.prompt();
-        account = assertDoesNotThrow(()-> manager.getAccountById(2));
+        account = assertDoesNotThrow(() -> manager.getAccountById(2));
         System.setOut(stdout);
         System.out.println(os.toString());
 
@@ -148,18 +129,17 @@ class AdminActorTest {
         assertEquals(account.pinCode, "77777");
     }
 
-
     @Test
     void testAction() {
-        OutputStream os = setInputOutput(new String[]{"5"});
+        OutputStream os = setInputOutput(new String[] {"5"});
         adminActor.action();
     }
 
     @Test
     void showAccount() {
-        OutputStream os = setInputOutput(new String[]{"4", "2", "5"});
+        OutputStream os = setInputOutput(new String[] {"4", "2", "5"});
         adminActor.prompt();
-        os = setInputOutput(new String[]{"4", "3", "5"});
+        os = setInputOutput(new String[] {"4", "3", "5"});
         adminActor.prompt();
     }
 

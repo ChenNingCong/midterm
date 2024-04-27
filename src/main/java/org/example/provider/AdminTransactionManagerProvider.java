@@ -1,12 +1,9 @@
 package org.example.provider;
 
-import jakarta.inject.Qualifier;
-
-import java.lang.annotation.Retention;
-
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Qualifier
-@Retention(RUNTIME)
-public @interface AdminTransactionManagerProvider {
-}
+import jakarta.inject.Qualifier;
+import java.lang.annotation.Retention;
+
+@Qualifier @Retention(RUNTIME)
+public @interface AdminTransactionManagerProvider {}

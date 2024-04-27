@@ -10,14 +10,16 @@ public abstract class AdminTransactionManager extends TransactionManager {
     }
 
     public abstract void createAccount(Account account) throws InvalidAccountIdException;
+
     public abstract void deleteAccountById(Integer id) throws InvalidAccountIdException;
+
     public abstract Account getAccountById(Integer id);
-    public abstract void updateAccount(Integer id,
-                                       String login,
-                                       String pinCode,
-                                       String holderNames,
-                                       Boolean status) throws InvalidAccountIdException;
+
+    public abstract void updateAccount(
+            Integer id, String login, String pinCode, String holderNames, Boolean status)
+            throws InvalidAccountIdException;
+
     public abstract boolean checkIfExistId(Integer id);
+
     public abstract boolean checkIfExistLogin(String login);
 }
-

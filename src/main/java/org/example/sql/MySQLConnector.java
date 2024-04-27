@@ -1,11 +1,11 @@
 package org.example.sql;
 
 import com.google.inject.Inject;
-import org.example.provider.MySQLConnectionParamsProvider;
-
+import java.sql.*;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
-import java.sql.*;
+import org.example.provider.MySQLConnectionParamsProvider;
+
 public class MySQLConnector implements Connector {
     MySQLConnectionParams params;
 
@@ -20,7 +20,8 @@ public class MySQLConnector implements Connector {
     }
 
     public void createAccountTable() {
-        String cmd = """
+        String cmd =
+                """
                 CREATE TABLE IF NOT EXISTS `accounts` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `login` varchar(255) NOT NULL UNIQUE,
@@ -33,8 +34,9 @@ public class MySQLConnector implements Connector {
                 """;
         executeUpdate(cmd);
     }
+
     public void dropAccountTable() {
-        String cmd =  "DROP TABLE IF EXISTS `accounts`;";
+        String cmd = "DROP TABLE IF EXISTS `accounts`;";
         executeUpdate(cmd);
     }
 

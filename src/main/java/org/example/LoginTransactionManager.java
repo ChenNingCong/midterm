@@ -7,5 +7,6 @@ public abstract class LoginTransactionManager extends TransactionManager {
     public LoginTransactionManager(Connector _connector) {
         super(_connector);
     }
+
     public abstract Integer tryLogin(String login, String pinCode);
 }
