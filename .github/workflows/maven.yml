@@ -52,6 +52,8 @@ jobs:
       with:
         fail_ci_if_error: true
         token: 'c2e16d6d-0ddc-40f2-a97d-53d32a94520d'
+      env:
+        CODECOV_TOKEN: 'c2e16d6d-0ddc-40f2-a97d-53d32a94520d'
     - name: Javadoc generation
       run: mvn javadoc:javadoc
     - name: Deploy JavaDoc 🚀
