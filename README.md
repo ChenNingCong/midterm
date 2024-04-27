@@ -13,7 +13,12 @@ CREATE USER chenningcong@localhost IDENTIFIED BY '12345678';
 CREATE DATABASE `account` DEFAULT CHARACTER SET utf8mb4;
 GRANT ALL PRIVILEGES ON account.* TO chenningcong@localhost;
 ```
-1.3 By default, the table contains two accounts. **The `admin` account is used for login**. The table will be created automatically during the first time you execute the program.
+1.3 A separate dataset `account_test` is used for testing and needs to be set up with the following command.
+```
+CREATE DATABASE `account_test` DEFAULT CHARACTER SET utf8mb4;
+GRANT ALL PRIVILEGES ON account_test.* TO chenningcong@localhost;
+```
+1.4 By default, the table contains two accounts. **The `admin` account is used for login**. The table will be created automatically during the first time you execute the program.
 
 | id | login | pincode | holdersname| balance | status |
 |---| --- | --- | --- | --- | --- |
