@@ -32,6 +32,14 @@ jobs:
       run: mvn spotless:apply
     - name: Static analysis
       run: mvn spotbugs:check
+    - name: Shutdown Ubuntu MySQL (SUDO)
+      run: sudo service mysql stop
+    - name: Set up MySQL
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql database: 'account_test'
+        mysql user: 'chenningcong'
+        mysql password: '12345678'
     - name: Java test
       run: mvn test -P release
     - name: Javadoc generation
