@@ -18,7 +18,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
@@ -33,7 +34,27 @@ jobs:
       run: mvn spotbugs:check 
     - name: Javadoc generation
       run: mvn javadoc:javadoc
+    - name: Deploy JavaDoc 🚀
+      uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.0
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        javadoc-branch: javadoc
+        java-version: 17
+        target-folder: javadoc
+        project: maven
     - name: Build with Maven With Debug Model
       run: mvn clean package --file pom.xml -P debug
+    - name: 'Upload Debug Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: debug
+        path: target/*.jar
+        retention-days: 5
     - name: Build with Maven With Release Model
-      run: mvn clean package --file pom.xml -P debug    
+      run: mvn clean package --file pom.xml -P release
+    - name: 'Upload Release Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: production
+        path: target/*.jar
+        retention-days: 5
