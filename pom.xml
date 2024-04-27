@@ -65,4 +65,42 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <lane>release</lane>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <debug>false</debug>
+                        </configuration>
+                    </plugin>
+                </plugins>
+                <finalName>${project.artifactId}-${lane}</finalName>
+            </build>
+        </profile>
+
+        <profile>
+            <id>debug</id>
+            <properties>
+                <lane>debug</lane>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <debug>true</debug>
+                            <debuglevel>lines,vars,source</debuglevel>
+                        </configuration>
+                    </plugin>
+                </plugins>
+                <finalName>${project.artifactId}-${lane}</finalName>
+            </build>
+        </profile>
+    </profiles>
 </project>
